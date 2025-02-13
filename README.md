@@ -31,8 +31,8 @@ height="100px">
 
 ### Estilização
 
-<img src="https://images.seeklogo.com/logo-png/25/2/bootstrap-logo-png_seeklogo-258859.png"
-height="300px">
+<img src="https://techsparx.com/img/Bootstrap-Logo.png"
+height="200px" width="300px">
 
 
  Além dessas linguagens houve a adição do <b>pre-commit</b>, uma ferramenta voltada a área de Dev-Ops, onde ela facilita e corrige erros a nível de código, extremamente importante quando se trabalha com mais desenvolvedores em um único repositório
