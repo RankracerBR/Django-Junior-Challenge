@@ -1,0 +1,58 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhe do Anel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favi/favicon.ico' %}"/>
+</head>
+<body>
+    <div class="container mt-3">
+        <a class="btn btn-primary mb-3" href="{% url 'anel-listagem' %}">Voltar</a>
+    </div>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header text-center">
+                <h1 class="card-title">{{ anel.nome_anel }}</h1>
+            </div>
+            <div class="card-body">
+                <form id="update-form">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="nome_anel" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="nome_anel" value="{{ anel.nome_anel }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="poder_anel" class="form-label">Poder</label>
+                        <textarea class="form-control" id="poder_anel">{{ anel.poder_anel }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="portador_anel" class="form-label">Portador</label>
+                        <input type="text" class="form-control" id="portador_anel" value="{{ anel.portador_anel }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="forjadoPor_anel" class="form-label">Forjado Por</label>
+                        <select class="form-select" id="forjadoPor_anel">
+                            <option value="Elfos" {% if anel.forjadoPor_anel == 'Elfos' %}selected{% endif %}>Elfos</option>
+                            <option value="Anões" {% if anel.forjadoPor_anel == 'Anões' %}selected{% endif %}>Anões</option>
+                            <option value="Homens" {% if anel.forjadoPor_anel == 'Homens' %}selected{% endif %}>Homens</option>
+                            <option value="Sauron" {% if anel.forjadoPor_anel == 'Sauron' %}selected{% endif %}>Sauron</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagem_anel" class="form-label">Imagem (URL)</label>
+                        <input type="url" class="form-control" id="imagem_anel" value="{{ anel.imagem_anel }}">
+                        <img src="{{ anel.imagem_anel }}" alt="{{ anel.nome_anel }}" class="img-fluid rounded" style="max-width: 300px;">
+                    </div>
+                    <button type="button" id="update-button" data-anel-id="{{ anel.id }}" class="btn btn-primary">Atualizar</button>
+                    <button type="button" id="delete-button" data-anel-id="{{ anel.id }}" class="btn btn-danger">Deletar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/anel_actions.js' %}"></script>
+</body>
+</html>

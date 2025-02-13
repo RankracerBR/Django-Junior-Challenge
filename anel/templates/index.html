@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anéis do Poder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favi/favicon.ico' %}"/>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Anéis do Poder</h1>
+        <a href="{% url 'criar-anel' %}" class="btn btn-primary mb-3">Criar Novo Anel</a>
+        <div class="list-group">
+            {% for anel in aneis %}
+            <a href="{% url 'detalhe-anel' anel.id %}" class="list-group-item list-group-item-action">
+                {{ anel.nome_anel }} - {{ anel.portador_anel }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

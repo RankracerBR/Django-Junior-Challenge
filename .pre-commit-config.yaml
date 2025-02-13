@@ -1,0 +1,66 @@
+default_language_version:
+  python: "3.10.12"
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.3.0
+    hooks:
+      - id: end-of-file-fixer
+        types: [python]
+      - id: fix-encoding-pragma
+        args: ["--remove"]
+      - id: no-commit-to-branch
+      - id: trailing-whitespace
+        types: [python]
+      - id: debug-statements
+      - id: fix-byte-order-marker
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: detect-private-key
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v2.38.0
+    hooks:
+      - id: pyupgrade
+        name: Apply pyupgrade changes
+        entry: pyupgrade
+        args: ["--py310-plus"]
+        language: python
+        types: [python]
+  
+  - repo: https://github.com/psf/black
+    rev: 22.8.0
+    hooks:
+      - id: black
+        name: Code formatting with Black
+        types: [python]
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        name: Isort imports
+        types: [python]
+  
+  - repo: https://github.com/pycqa/pylint
+    rev: v2.13.5
+    hooks:
+      - id: pylint
+        name: Check pylint issues
+        types: [python]
+        additional_dependencies: ["Django", "model_bakery"]
+
+  - repo: local
+    hooks:
+      - id: django-migrations
+        name: Check django migrations
+        entry: python manage.py makemigrations --check
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: django-check
+        name: Check django
+        entry: python manage.py check
+        language: system
+        types: [python]
+        pass_filenames: false
