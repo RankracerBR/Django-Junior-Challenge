@@ -709,3 +709,15 @@ class DetalheAnelViewTest(TestCase):
 ```bash
 pre-commit run --all-files
 ```
+
+## Parte 6(Opcional): Painel Admin do Django
+
+#### Caso queira analisar o painel do admin, primeiro digite o comando para criar um perfil de super usuário:
+
+```bash
+python manage.py createsuperuser
+```
+
+#### Após a criação irá aparecer algumas mensagens no terminal para você digitar o nome, email e senha, isso fica a seu critério
+
+#### Após a criação do perfil, é necessário acessar a url: http/localhost:8000/admin/ para acessar a tela de login do admin, e então logar a conta do super usuário criada anteriormente, para então ter acesso ao painel
