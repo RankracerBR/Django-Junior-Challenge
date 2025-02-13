@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8000/aneis/';
+const API_URL = 'http://localhost:8000/';
 
 async function loadAneis(){
     const response = await fetch(API_URL);

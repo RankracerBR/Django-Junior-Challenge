@@ -33,7 +33,7 @@ async function deleteAnel(anelId) {
 
         if (response.ok) {
             alert('Anel deletado com sucesso!');
-            window.location.href = '/aneis/';
+            window.location.href = '/';
         } else {
             const errorData = await response.json();
             alert(`Erro ao deletar: ${errorData.error || 'Erro desconhecido'}`);
