@@ -7,19 +7,37 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Anel',
+            name="Anel",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('nome_anel', models.CharField(max_length=255)),
-                ('poder_anel', models.TextField()),
-                ('portador_anel', models.CharField(max_length=255)),
-                ('forjadoPor_anel', models.CharField(choices=[('Elfos', 'Elfos'), ('Anões', 'Anões'), ('Homens', 'Homens'), ('Sauron', 'Sauron')], max_length=50)),
-                ('imagem_anel', models.ImageField(upload_to='aneis')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("nome_anel", models.CharField(max_length=255)),
+                ("poder_anel", models.TextField()),
+                ("portador_anel", models.CharField(max_length=255)),
+                (
+                    "forjadoPor_anel",
+                    models.CharField(
+                        choices=[
+                            ("Elfos", "Elfos"),
+                            ("Anões", "Anões"),
+                            ("Homens", "Homens"),
+                            ("Sauron", "Sauron"),
+                        ],
+                        max_length=50,
+                    ),
+                ),
+                ("imagem_anel", models.ImageField(upload_to="aneis")),
             ],
         ),
     ]

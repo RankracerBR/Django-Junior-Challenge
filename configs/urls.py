@@ -1,8 +1,9 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
+from anel import urls as anel_urls
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('anel.urls')),  # Ensure this line is correct
+    path("", include(anel_urls)),
+    path("admin/", admin.site.urls),
 ]

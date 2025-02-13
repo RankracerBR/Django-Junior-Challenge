@@ -29,6 +29,11 @@ height="100px">
 <img src="https://www.pikpng.com/pngl/b/597-5977109_html5-logo-png.png" 
 height="100px">
 
+### Estilização
+<img src="https://images.seeklogo.com/logo-png/25/2/bootstrap-logo-png_seeklogo-258859.png"
+height="300px">
+
+
  Além dessas linguagens houve a adição do <b>pre-commit</b>, uma ferramenta voltada a área de Dev-Ops, onde ela facilita e corrige erros a nível de código, extremamente importante quando se trabalha com mais desenvolvedores em um único repositório
 
 # Informações Técnicas
@@ -235,19 +240,68 @@ class AnelAdmin(admin.ModelAdmin):
     <title>Anéis do Poder</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/png" href="{% static 'favi/favicon.ico' %}"/>
+    <style>
+        .carousel-item img {
+            max-height: 400px;
+            object-fit: cover;
+        }
+        .carousel-caption {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: black;
+            border-radius: 50%;
+            padding: 10px;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 5%;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
         <h1>Anéis do Poder</h1>
         <a href="{% url 'criar-anel' %}" class="btn btn-primary mb-3">Criar Novo Anel</a>
-        <div class="list-group">
-            {% for anel in aneis %}
-            <a href="{% url 'detalhe-anel' anel.id %}" class="list-group-item list-group-item-action">
-                {{ anel.nome_anel }} - {{ anel.portador_anel }}
-            </a>
-            {% endfor %}
+
+        <!-- Bootstrap Carousel -->
+        <div id="aneisCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for anel in aneis %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <!-- Clickable Image -->
+                    <a href="{% url 'detalhe-anel' anel.id %}">
+                        <img src="{{ anel.imagem_anel }}" class="d-block w-100" alt="{{ anel.nome_anel }}">
+                    </a>
+                    <!-- Carousel Caption -->
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>{{ anel.nome_anel }}</h5>
+                        <p>
+                            <strong>Poder:</strong> {{ anel.poder_anel }}<br>
+                            <strong>Portador:</strong> {{ anel.portador_anel }}<br>
+                            <strong>Forjado por:</strong> {{ anel.forjadoPor_anel }}
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <!-- Carousel Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#aneisCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#aneisCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Próximo</span>
+            </button>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
@@ -492,4 +546,165 @@ document.addEventListener('DOMContentLoaded', function () {
     max-height: 500px;
     object-fit: cover;
 }
+```
+
+## Parte 4: Testes Unitários
+
+#### Sabe-se que testes unitários são extremamente importantes para testar a aplicação de ponta a ponta, o código abaixo mostra como foram feito os testes unitários, mas caso queira rodar os testes na sua máquina, apenas digite:
+
+```bash
+python manage.py test
+```
+
+#### Abaixo está o código dos testes unitários:
+
+```python
+from django.test import TestCase
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient
+from .models import Anel
+from .serializers import AnelSerializer
+
+
+class AnelGeralTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.anel1 = Anel.objects.create(
+            nome_anel='Anel do Poder',
+            poder_anel='Invisibilidade',
+            portador_anel='Frodo',
+            forjadoPor_anel='Elfos',
+            imagem_anel='imagem1.jpg'
+        )
+        self.anel2 = Anel.objects.create(
+            nome_anel='Anel Único',
+            poder_anel='Dominação',
+            portador_anel='Sauron',
+            forjadoPor_anel='Sauron',
+            imagem_anel='imagem2.jpg'
+        )
+
+    def test_get_all_aneis(self):
+        response = self.client.get(reverse('anel-listagem'))
+        aneis = Anel.objects.all()
+        serializer = AnelSerializer(aneis, many=True)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['aneis'], serializer.data)
+
+
+class CriarAnelViewTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.valid_payload = {
+            'nome_anel': 'Anel do Poder',
+            'poder_anel': 'Invisibilidade',
+            'portador_anel': 'Frodo',
+            'forjadoPor_anel': 'Elfos',
+            'imagem_anel': 'http://example.com/imagem1.jpg'
+        }
+        self.invalid_payload = {
+            'nome_anel': '',
+            'poder_anel': '',
+            'portador_anel': '',
+            'forjadoPor_anel': '',
+            'imagem_anel': ''
+        }
+
+    def test_create_valid_anel(self):
+        response = self.client.post(reverse('criar-anel'), data=self.valid_payload, format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(Anel.objects.count(), 1)
+
+    def test_create_invalid_anel(self):
+        response = self.client.post(reverse('criar-anel'), data=self.invalid_payload, format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Anel.objects.count(), 0)
+
+    def test_create_anel_exceeds_limit(self):
+        for _ in range(3):
+            Anel.objects.create(
+                nome_anel='Anel do Poder',
+                poder_anel='Invisibilidade',
+                portador_anel='Frodo',
+                forjadoPor_anel='Elfos',
+                imagem_anel='imagem1.jpg'
+            )
+        response = self.client.post(reverse('criar-anel'), data=self.valid_payload, format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Anel.objects.count(), 3)
+
+
+class DetalheAnelViewTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.anel = Anel.objects.create(
+            nome_anel='Anel do Poder',
+            poder_anel='Invisibilidade',
+            portador_anel='Frodo',
+            forjadoPor_anel='Elfos',
+            imagem_anel='imagem1.jpg'
+        )
+        self.valid_payload = {
+            'nome_anel': 'Anel Único',
+            'poder_anel': 'Dominação',
+            'portador_anel': 'Sauron',
+            'forjadoPor_anel': 'Sauron',
+            'imagem_anel': 'http://example.com/imagem2.jpg'
+        }
+    
+        self.invalid_payload = {
+            'nome_anel': '',
+            'poder_anel': '',
+            'portador_anel': '',
+            'forjadoPor_anel': '',
+            'imagem_anel': ''
+        }
+
+    def test_get_valid_single_anel(self):
+        response = self.client.get(reverse('detalhe-anel', kwargs={'pk': self.anel.pk}))
+        anel = Anel.objects.get(pk=self.anel.pk)
+        serializer = AnelSerializer(anel)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['anel'], serializer.data)
+
+    def test_get_invalid_single_anel(self):
+        response = self.client.get(reverse('detalhe-anel', kwargs={'pk': 30}))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_valid_update_anel(self):
+        response = self.client.put(
+            reverse('detalhe-anel', kwargs={'pk': self.anel.pk}),
+            data=self.valid_payload,
+            format='multipart'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_invalid_update_anel(self):
+        response = self.client.put(
+            reverse('detalhe-anel', kwargs={'pk': self.anel.pk}),
+            data=self.invalid_payload,
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_delete_valid_anel(self):
+        response = self.client.delete(
+            reverse('detalhe-anel', kwargs={'pk': self.anel.pk})
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_invalid_anel(self):
+        response = self.client.delete(
+            reverse('detalhe-anel', kwargs={'pk': 30})
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+```
+
+## Parte 5(Opcional): Pre-Commit
+
+#### Caso queira rodar na sua máquina o pre-commit, apenas digite esse código abaixo que ele irá fazer as correções no projeto:
+
+```bash
+pre-commit run --all-files
 ```

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('anel', '0001_initial'),
+        ("anel", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='anel',
-            name='imagem_anel',
+            model_name="anel",
+            name="imagem_anel",
             field=models.URLField(max_length=255),
         ),
     ]
